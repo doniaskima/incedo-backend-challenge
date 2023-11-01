@@ -25,6 +25,12 @@ app.use(cors({ origin: corsUrl, optionsSuccessStatus: 200 }));
 
 // Routes
 app.use('/', routes);
+ 
+// Add a test route
+app.get('/', (req: Request, res: Response) => {
+  res.send('Welcome to my API!');
+});
+
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => next(new NotFoundError()));

@@ -5,7 +5,6 @@ enum StatusCode {
   SUCCESS = '10000',
   FAILURE = '10001',
   RETRY = '10002',
-  INVALID_ACCESS_TOKEN = '10003',
 }
 
 enum ResponseStatus {
@@ -50,12 +49,7 @@ abstract class ApiResponse {
   }
 }
 
-export class AuthFailureResponse extends ApiResponse {
-  constructor(message = 'Authentication Failure') {
-    super(StatusCode.FAILURE, ResponseStatus.UNAUTHORIZED, message);
-  }
-}
-
+ 
 export class NotFoundResponse extends ApiResponse {
   constructor(message = 'Not Found') {
     super(StatusCode.FAILURE, ResponseStatus.NOT_FOUND, message);
@@ -106,33 +100,4 @@ export class SuccessResponse<T> extends ApiResponse {
   }
 }
 
-export class AccessTokenErrorResponse extends ApiResponse {
-  private instruction = 'refresh_token';
 
-  constructor(message = 'Access token invalid') {
-    super(
-      StatusCode.INVALID_ACCESS_TOKEN,
-      ResponseStatus.UNAUTHORIZED,
-      message,
-    );
-  }
-
-  send(res: Response, headers: { [key: string]: string } = {}): Response {
-    headers.instruction = this.instruction;
-    return super.prepare<AccessTokenErrorResponse>(res, this, headers);
-  }
-}
-
-export class TokenRefreshResponse extends ApiResponse {
-  constructor(
-    message: string,
-    private accessToken: string,
-    private refreshToken: string,
-  ) {
-    super(StatusCode.SUCCESS, ResponseStatus.SUCCESS, message);
-  }
-
-  send(res: Response, headers: { [key: string]: string } = {}): Response {
-    return super.prepare<TokenRefreshResponse>(res, this, headers);
-  }
-}

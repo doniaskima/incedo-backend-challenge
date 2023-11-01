@@ -9,7 +9,6 @@ if (!dir) dir = path.resolve('logs');
 
 // create directory if it is not present
 if (!fs.existsSync(dir)) {
-  // Create the directory if it does not exist
   fs.mkdirSync(dir);
 }
 
@@ -17,7 +16,6 @@ const logLevel = environment === 'development' ? 'debug' : 'warn';
 
 const dailyRotateFile = new DailyRotateFile({
   level: logLevel,
-  // @ts-ignore
   filename: dir + '/%DATE%.log',
   datePattern: 'YYYY-MM-DD',
   zippedArchive: true,

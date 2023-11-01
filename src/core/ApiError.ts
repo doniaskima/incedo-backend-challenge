@@ -1,8 +1,6 @@
 import { Response } from 'express';
 import { environment } from '../config';
 import {
-  AuthFailureResponse,
-  AccessTokenErrorResponse,
   InternalErrorResponse,
   NotFoundResponse,
   BadRequestResponse,
@@ -31,10 +29,6 @@ export abstract class ApiError extends Error {
     switch (err.type) {
       case ErrorType.BAD_TOKEN:
       case ErrorType.TOKEN_EXPIRED:
-      case ErrorType.UNAUTHORIZED:
-        return new AuthFailureResponse(err.message).send(res);
-      case ErrorType.ACCESS_TOKEN:
-        return new AccessTokenErrorResponse(err.message).send(res);
       case ErrorType.INTERNAL:
         return new InternalErrorResponse(err.message).send(res);
       case ErrorType.NOT_FOUND:
@@ -55,11 +49,7 @@ export abstract class ApiError extends Error {
   }
 }
 
-export class AuthFailureError extends ApiError {
-  constructor(message = 'Invalid Credentials') {
-    super(ErrorType.UNAUTHORIZED, message);
-  }
-}
+ 
 
 export class InternalError extends ApiError {
   constructor(message = 'Internal error') {
@@ -88,12 +78,6 @@ export class ForbiddenError extends ApiError {
 export class NoEntryError extends ApiError {
   constructor(message = "Entry don't exists") {
     super(ErrorType.NO_ENTRY, message);
-  }
-}
-
-export class BadTokenError extends ApiError {
-  constructor(message = 'Token is not valid') {
-    super(ErrorType.BAD_TOKEN, message);
   }
 }
 
