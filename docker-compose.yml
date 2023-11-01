@@ -26,12 +26,10 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=$DB_ADMIN_PWD
       - MONGO_INITDB_DATABASE=$DB_NAME
     ports:
-      - '$DB_PORT:27017'
+      - '${DB_PORT}:27017' # Use the DB_PORT environment variable
     volumes:
       - ./addons/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
       - dbdata:/data/db
 
 volumes:
   dbdata:
-  cache:
-    driver: local
