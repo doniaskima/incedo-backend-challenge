@@ -1,12 +1,9 @@
 import express from 'express';
-import { getArtistData } from '../../controllers/ArtistSearchController';
-
+import ArtistRouter from '..';
+ 
 
 const router = express.Router();
 
-
-router.use('/', getArtistData);
-
-
+router.use('/artist',ArtistRouter)
 
 export default router;
