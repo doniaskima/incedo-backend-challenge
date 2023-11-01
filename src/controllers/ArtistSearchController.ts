@@ -1,11 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
 import asyncHandler from '../helpers/asyncHandler';
-import fs from 'fs';
 import artistDict from '../data/artists.json';
-import { createObjectCsvWriter } from 'csv-writer';
+import { writeToFile } from '../helpers/csv-writer';
 
-/* Define a custom Header type */
-type Header = { id: string; title: string }[];
 
 interface Record {
   name: string;
@@ -17,61 +14,63 @@ interface Record {
 
 interface Artist {
   name: string;
-  listeners: number;
+  listeners: string | number;  
   mbid: string;
   url: string;
   streamable: boolean;
   image: Image[];
 }
 
+
 interface Image {
   "#text": string;
   size: string;
 }
 
-const fetchArtistData = async (artistName: string): Promise<Artist[]> => {
+// Create a function for fetching artist data from the API
+const fetchArtistDataFromAPI = async (artistName: string): Promise<Artist[]> => {
   const URL = `http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&api_key=${process.env.API_KEY}&format=json`;
-  const response = await fetch(URL);
-  const data = await response.json();
-  const artistData = data.results.artistmatches.artist;
-
-  // If there are fewer than 4 artists, add a random artist from the dictionary.
-  if (artistData.length < 4) {
-    const randomIndex = Math.floor(Math.random() * artistDict.randomArtists.length);
-    const randomArtist = artistDict.randomArtists[randomIndex];
-    artistData.push(randomArtist);
+  try {
+    const response = await fetch(URL);
+    if (!response.ok) {
+      throw new Error('Failed to fetch artist data');
+    }
+    const data = await response.json();
+    return data.results.artistmatches.artist;
+  } catch (error) {
+    throw error;
   }
-
-  return artistData;
 };
 
-const writeToFile = async (filePath: string, records: Record[]): Promise<void> => {
-  const csvWriter = createObjectCsvWriter({
-    path: filePath,
-    header: [
-      { id: 'name', title: 'name' },
-      { id: 'mbid', title: 'mbid' },
-      { id: 'url', title: 'url' },
-      { id: 'image_small', title: 'image_small' },
-      { id: 'image', title: 'image' },
-    ] as Header,
-  });
 
-  await csvWriter.writeRecords(records);
+const searchArtistData = async (artistName: string): Promise<Artist[]> => {
+  try {
+    let artistData = await fetchArtistDataFromAPI(artistName);
+    if (artistData.length < 4) {
+      const randomIndex = Math.floor(Math.random() * artistDict.randomArtists.length);
+      const randomArtist = artistDict.randomArtists[randomIndex];
+      artistData = [...artistData, randomArtist];
+    }
+
+    return artistData;
+  } catch (error) {
+    throw error;
+  }
 };
+
 
 export const getArtistData = asyncHandler(async (req: Request, res: Response) => {
   const artistName = req.params.artistName;
-  const artistsData = await fetchArtistData(artistName);
+  const artistsData = await searchArtistData(artistName);
 
   return res.json({ artistsData });
 });
 
-export const writeArtistsToFile = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+export const writeArtistsToFile = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
   const { csvFileName, artistName } = req.params || 'defaultArtistsList';
 
   try {
-    const artistsData = await fetchArtistData(artistName);
+    const artistsData = await searchArtistData(artistName);
 
     const records: Record[] = [];
     artistsData.forEach((artist) => {
@@ -92,7 +91,8 @@ export const writeArtistsToFile = async (req: Request, res: Response, next: Next
 
     console.log('Successfully written CSV file');
     res.status(200).send('CSV File successfully created');
-  } catch (err) {
-    res.status(500).json({ msg: err.message });
+  } catch (error) {
+    // Handle errors, you can log or rethrow the error as needed
+    res.status(500).json({ msg: error.message });
   }
-};
+});
