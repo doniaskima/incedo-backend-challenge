@@ -1,4 +1,5 @@
 import { createObjectCsvWriter } from 'csv-writer';
+import { Record } from '../types/artist-search-types';
 
 /* Define a custom Header type */
 type Header = { id: string; title: string }[];
@@ -19,10 +20,4 @@ export const writeToFile = async (filePath: string, records: Record[]) => {
   await csvWriter.writeRecords(records);
 };
 
-interface Record {
-  name: string;
-  mbid: string;
-  url: string;
-  image_small: string;
-  image: string;
-}
+ 

@@ -44,14 +44,14 @@ export const writeArtistsToFile = asyncHandler(async (req: Request, res: Respons
 
     const records: Record[] = [];
     artistsData.forEach((artist) => {
-      const imageSmall = artist.image.find((imageItem) => imageItem.size === 'small')?.['#text'];
-      const imageLarge = artist.image.find((imageItem) => imageItem.size === 'large')?.['#text'];
+      const imageSmall = artist.image?.find((imageItem) => imageItem.size === 'small')?.['#text'] || '';
+      const imageLarge = artist.image?.find((imageItem) => imageItem.size === 'large')?.['#text'] || '';
 
       records.push({
         name: artist.name,
         mbid: artist.mbid,
         url: artist.url,
-        image_small: imageSmall || '', 
+        image_small: imageSmall,
         image: imageLarge,
       });
     });
