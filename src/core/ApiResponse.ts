@@ -90,14 +90,11 @@ export class FailureMsgResponse extends ApiResponse {
   }
 }
 
-export class SuccessResponse<T> extends ApiResponse {
-  constructor(message: string, private data: T) {
+export class SuccessResponse extends ApiResponse {
+  constructor(message: string) {
     super(StatusCode.SUCCESS, ResponseStatus.SUCCESS, message);
   }
-
-  send(res: Response, headers: { [key: string]: string } = {}): Response {
-    return super.prepare<SuccessResponse<T>>(res, this, headers);
-  }
 }
+
 
 
