@@ -3,7 +3,7 @@ import ArtistRouter from '..';
  
 
 const router = express.Router();
-
-router.use('/artist',ArtistRouter)
+ 
+router.use('/',ArtistRouter)
 
 export default router;

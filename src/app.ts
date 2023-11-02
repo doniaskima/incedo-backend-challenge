@@ -24,7 +24,7 @@ app.use(
 app.use(cors({ origin: corsUrl, optionsSuccessStatus: 200 }));
 
 // Routes
-app.use('/', routes);
+app.use('/search', routes);
  
 // Add a test route
 app.get('/', (req: Request, res: Response) => {

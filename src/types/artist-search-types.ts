@@ -3,9 +3,10 @@ export interface Record {
   name: string;
   mbid: string;
   url: string;
-  image_small: string;  
-  image:string;
+  image_small?: string;
+  image?: string;
 }
+
 
 export interface Artist {
   name: string;
@@ -16,6 +17,13 @@ export interface Artist {
   image: Image[];
 }
 
+export type IArtistData = {
+  results: {
+    artistmatches: {
+      artist: Artist[]
+    }
+  }
+}
 
 export interface Image {
   "#text": string;

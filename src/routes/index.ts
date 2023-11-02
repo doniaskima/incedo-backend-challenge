@@ -1,9 +1,10 @@
 import express from 'express';
-import { searchArtistData, writeArtistsToFile } from '../controllers/ArtistSearchController';
+import { searchArtistDataHandler, writeArtistsTofileHandler } from '../controllers/ArtistSearchController';
+  
 const ArtistRouter = express.Router();
 
-ArtistRouter.get('/:artistName', searchArtistData);
-ArtistRouter.get("/:artistName/:csvFileName?",writeArtistsToFile)
+ArtistRouter.get('/:artistName', searchArtistDataHandler);
+ArtistRouter.get("/:artistName/:csvFileName",writeArtistsTofileHandler)
 
 
 export default ArtistRouter;
