@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response } from 'express';
 import asyncHandler from '../helpers/asyncHandler';
 import artistDict from '../data/artists.json';
 import { writeToFile } from '../helpers/csv-writer';
@@ -36,7 +36,7 @@ export const searchArtistData = async (artistName: string): Promise<Artist[]> =>
 
 
 
-export const writeArtistsToFile = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+export const writeArtistsToFile = asyncHandler(async (req: Request, res: Response) => {
   const { csvFileName, artistName } = req.params || 'defaultArtistsList';
 
   try {
