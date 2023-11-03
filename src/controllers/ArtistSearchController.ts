@@ -3,23 +3,30 @@ import asyncHandler from '../helpers/asyncHandler';
 import axios from 'axios';
 import artistMocks from "../data/artists.json"
 import { writeToFile } from "../helpers/csv-writer";
-import { Artist, IArtistData, Record } from "../types/artist-search-types";
+import { Artist, IArtistData } from "../types/artist-search-types";
 import { BadRequestResponse, ForbiddenResponse, InternalErrorResponse, NotFoundResponse, SuccessResponse } from '../core/ApiResponse';
 import { BadRequestError, ForbiddenError, InternalError, NotFoundError } from '../core/ApiError';
-
+import { mapArtistsData } from '../helpers/mapper';
+const LAST_FM_API_BASE_URL = 'http://ws.audioscrobbler.com/2.0/';
 const API_KEY = process.env.API_KEY || '5df2f200a6e7d1671ec61790052a1cca';
 
 
+function randomArtist(artistData: Artist[]): Artist[] {
+  while (artistData.length < 8) {
+    const randomIndex = Math.floor(Math.random() * artistMocks.randomArtists.length);
+    const randomArtist = artistMocks.randomArtists[randomIndex];
+    artistData.push(randomArtist);
+  }
+  return artistData;
+}
+
 async function fetchArtistDataFromAPI(artistName: string): Promise<Artist[]> {
-  const URL = `http://ws.audioscrobbler.com/2.0/?method=artist.search&artist=${artistName}&api_key=${API_KEY}&format=json`;
+  const URL = `${LAST_FM_API_BASE_URL}?method=artist.search&artist=${artistName}&api_key=${API_KEY}&format=json`;
   const { data } = await axios.get<IArtistData>(URL);
   const artistData: Artist[] = data.results.artistmatches.artist;
+
   if (artistData.length < 1) {
-    while (artistData.length < 8) {
-      const randomIndex = Math.floor(Math.random() * artistMocks.randomArtists.length);
-      const randomArtist = artistMocks.randomArtists[randomIndex];
-      artistData.push(randomArtist);
-    }
+    return randomArtist(artistData);
   }
   return artistData;
 }
@@ -42,20 +49,7 @@ async function writeArtistsTofile(
 
   try {
     const artistsData = await fetchArtistDataFromAPI(artistName);
-
-    const records: Record[] = artistsData.map((artist) => {
-      const image_small = artist.image.find((imageItem) => imageItem.size === 'small')?.['#text'];
-      const image = artist.image.find((imageItem) => imageItem.size === 'large')?.['#text'];
-
-      return {
-        name: artist.name,
-        mbid: artist.mbid,
-        url: artist.url,
-        image_small,
-        image,
-      };
-    });
-
+    const records = await mapArtistsData(artistsData);
     await writeToFile(`src/data/${csvFileName}.csv`, records);
 
     const successResponse = new SuccessResponse('CSV File successfully created');
