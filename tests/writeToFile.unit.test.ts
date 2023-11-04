@@ -1,4 +1,6 @@
 import { writeToFile } from '../src/helpers/csv-writer';
+ 
+
 jest.mock('csv-writer', () => {
   return {
     createObjectCsvWriter: jest.fn().mockReturnValue({
@@ -30,7 +32,9 @@ describe('writeToFile', () => {
     await writeToFile(filePath, records);
 
     // Assert that createObjectCsvWriter was called with the correct arguments
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const { createObjectCsvWriter } = require('csv-writer');
+
     expect(createObjectCsvWriter).toHaveBeenCalledWith({
       path: filePath,
       header: [

@@ -66,20 +66,19 @@ Before you get started, make sure you have the following installed:
 
    Before you can use the application, you need to configure it.   Create a .env file in the project directory and specify the following environment variables:
 
-
-    ```bash
-     PORT=3000
-     API_KEY=your_api_key
-    ```
+```bash
+       PORT=3000
+       API_KEY=your_api_key
+```
 
 
 ## Usage:
 
    To start the application, run:
 
-    ```bash
+```bash
      npm start
-    ```
+```
  
 This will build the project and start the server. The application will be available at `http://localhost:your-port-number`, where `your-port-number` is the port you have configured in your project.
 
