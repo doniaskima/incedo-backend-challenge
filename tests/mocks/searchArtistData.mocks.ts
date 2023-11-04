@@ -1,5 +1,7 @@
-{
-  "randomArtists": [
+
+// Mock response data
+export const mockArtistData = {
+  "artistsData": [
     {
       "name": "Maribou State",
       "listeners": "437740",
@@ -57,7 +59,7 @@
             "size": "mega"
         }
     ]
-}
+},
 
   ]
 }

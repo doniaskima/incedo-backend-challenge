@@ -1,0 +1,49 @@
+{
+	"info": {
+		"_postman_id": "9fbd7a89-56e9-4150-b1cc-9cb505c53070",
+		"name": "incedo-backend-challenge",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "20151130"
+	},
+	"item": [
+		{
+			"name": "getArtistData",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/search/Estate",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"search",
+						"Estate"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "WelcomeToMyApi",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

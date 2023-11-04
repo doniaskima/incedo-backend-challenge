@@ -12,7 +12,7 @@ const API_KEY = process.env.API_KEY || '5df2f200a6e7d1671ec61790052a1cca';
 
 
 function randomArtist(artistData: Artist[]): Artist[] {
-  while (artistData.length < 8) {
+  while (artistData.length < 3) {
     const randomIndex = Math.floor(Math.random() * artistMocks.randomArtists.length);
     const randomArtist = artistMocks.randomArtists[randomIndex];
     artistData.push(randomArtist);
@@ -20,7 +20,7 @@ function randomArtist(artistData: Artist[]): Artist[] {
   return artistData;
 }
 
-async function fetchArtistDataFromAPI(artistName: string): Promise<Artist[]> {
+export async function fetchArtistDataFromAPI(artistName: string): Promise<Artist[]> {
   const URL = `${LAST_FM_API_BASE_URL}?method=artist.search&artist=${artistName}&api_key=${API_KEY}&format=json`;
   const { data } = await axios.get<IArtistData>(URL);
   const artistData: Artist[] = data.results.artistmatches.artist;
@@ -32,7 +32,7 @@ async function fetchArtistDataFromAPI(artistName: string): Promise<Artist[]> {
 }
 
 
-async function searchArtistData(
+export async function searchArtistData(
   req: Request,
   res: Response,
 ) {
@@ -41,7 +41,7 @@ async function searchArtistData(
   res.json({ artistsData });
 }
 
-async function writeArtistsTofile(
+export async function writeArtistsTofile(
   req: Request,
   res: Response,
 ) {

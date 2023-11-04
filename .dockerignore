@@ -4,7 +4,7 @@
 # ignore vs code project config files
 .vscode
 .vs
-
+dist
 # ignore logs
 logs
 *.log

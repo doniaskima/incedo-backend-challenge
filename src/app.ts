@@ -1,7 +1,9 @@
 import express, { Request, Response, NextFunction } from 'express';
 import Logger from './core/Logger';
 import cors from 'cors';
-import { corsUrl, environment } from './config';
+import swaggerUI from 'swagger-ui-express';
+import swaggerJsDoc from 'swagger-jsdoc';
+import { baseUrl, corsUrl, environment } from './config';
 
 import {
   NotFoundError,
@@ -22,6 +24,26 @@ app.use(
   express.urlencoded({ limit: '10mb', extended: true, parameterLimit: 50000 }),
 );
 app.use(cors({ origin: corsUrl, optionsSuccessStatus: 200 }));
+
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Library API',
+      version: '1.0.0',
+      description: 'A simple Express Library API',
+    },
+    servers: [
+      {
+        url: baseUrl,
+      },
+    ],
+  },
+  apis: ['./src/docs/*.ts'],
+};
+
+const specs = swaggerJsDoc(options);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 
 // Routes
 app.use('/search', routes);
