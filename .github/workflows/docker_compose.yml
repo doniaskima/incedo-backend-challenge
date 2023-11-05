@@ -23,5 +23,6 @@ jobs:
     - name: Run tests
       run: docker exec -t node-app npm test
     - name: Clean up
-      if: success() || failure()
-      run: docker-compose down --rmi all -v --remove-orphans
+      run: docker stop node-app || true
+           docker rm node-app || true
+           docker rmi node-app || true
